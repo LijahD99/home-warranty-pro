@@ -18,6 +18,11 @@ class TicketService
             unset($data['image']);
         }
 
+        // Set default status if not provided
+        if (!isset($data['status'])) {
+            $data['status'] = 'submitted';
+        }
+
         return Ticket::create($data);
     }
 
@@ -35,7 +40,7 @@ class TicketService
 
         $current_status = $ticket->status;
 
-        if (!isset($allowed_transitions[$current_status]) || 
+        if (!isset($allowed_transitions[$current_status]) ||
             !in_array($new_status, $allowed_transitions[$current_status])) {
             throw new \InvalidArgumentException(
                 "Invalid status transition from {$current_status} to {$new_status}"
@@ -43,7 +48,7 @@ class TicketService
         }
 
         $ticket->update(['status' => $new_status]);
-        
+
         return $ticket->fresh();
     }
 

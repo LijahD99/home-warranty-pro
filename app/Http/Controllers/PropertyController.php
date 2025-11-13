@@ -14,11 +14,11 @@ class PropertyController extends Controller
     public function index(Request $request)
     {
         Gate::authorize('viewAny', Property::class);
-        
+
         /** @var \App\Models\User $user */
         $user = $request->user();
         $properties = $user->properties()->latest()->get();
-        
+
         return view('properties.index', compact('properties'));
     }
 
@@ -28,7 +28,7 @@ class PropertyController extends Controller
     public function create()
     {
         Gate::authorize('create', Property::class);
-        
+
         return view('properties.create');
     }
 
@@ -38,7 +38,7 @@ class PropertyController extends Controller
     public function store(Request $request)
     {
         Gate::authorize('create', Property::class);
-        
+
         $validated = $request->validate([
             'address' => 'required|string|max:255',
             'city' => 'required|string|max:255',
@@ -61,7 +61,7 @@ class PropertyController extends Controller
     public function show(Property $property)
     {
         Gate::authorize('view', $property);
-        
+
         return view('properties.show', compact('property'));
     }
 
@@ -71,7 +71,7 @@ class PropertyController extends Controller
     public function edit(Property $property)
     {
         Gate::authorize('update', $property);
-        
+
         return view('properties.edit', compact('property'));
     }
 
@@ -81,7 +81,7 @@ class PropertyController extends Controller
     public function update(Request $request, Property $property)
     {
         Gate::authorize('update', $property);
-        
+
         $validated = $request->validate([
             'address' => 'required|string|max:255',
             'city' => 'required|string|max:255',
@@ -102,7 +102,7 @@ class PropertyController extends Controller
     public function destroy(Property $property)
     {
         Gate::authorize('delete', $property);
-        
+
         $property->delete();
 
         return redirect()->route('properties.index')

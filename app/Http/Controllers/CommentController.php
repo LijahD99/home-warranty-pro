@@ -15,7 +15,7 @@ class CommentController extends Controller
     public function store(Request $request, Ticket $ticket)
     {
         Gate::authorize('view', $ticket);
-        
+
         $validated = $request->validate([
             'comment' => 'required|string',
             'is_internal' => 'nullable|boolean',
@@ -23,7 +23,7 @@ class CommentController extends Controller
 
         /** @var \App\Models\User $user */
         $user = $request->user();
-        
+
         // Only builders and admins can mark comments as internal
         if (isset($validated['is_internal']) && $validated['is_internal']) {
             if (!$user->isBuilder() && !$user->isAdmin()) {
@@ -48,7 +48,7 @@ class CommentController extends Controller
     {
         /** @var \App\Models\User $user */
         $user = request()->user();
-        
+
         // Only the comment author or admins can delete comments
         if ($comment->user_id !== $user->id && !$user->isAdmin()) {
             abort(403, 'Unauthorized action.');

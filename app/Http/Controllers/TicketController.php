@@ -19,10 +19,10 @@ class TicketController extends Controller
     public function index(Request $request)
     {
         Gate::authorize('viewAny', Ticket::class);
-        
+
         /** @var \App\Models\User $user */
         $user = $request->user();
-        
+
         // Homeowners see only their tickets
         if ($user->isHomeowner()) {
             $tickets = $user->tickets()
@@ -35,7 +35,7 @@ class TicketController extends Controller
                 ->latest()
                 ->get();
         }
-        
+
         return view('tickets.index', compact('tickets'));
     }
 
@@ -45,11 +45,11 @@ class TicketController extends Controller
     public function create(Request $request)
     {
         Gate::authorize('create', Ticket::class);
-        
+
         /** @var \App\Models\User $user */
         $user = $request->user();
         $properties = $user->properties;
-        
+
         return view('tickets.create', compact('properties'));
     }
 
@@ -59,7 +59,7 @@ class TicketController extends Controller
     public function store(Request $request)
     {
         Gate::authorize('create', Ticket::class);
-        
+
         $validated = $request->validate([
             'property_id' => 'required|exists:properties,id',
             'area_of_issue' => 'required|string|max:255',
@@ -83,9 +83,9 @@ class TicketController extends Controller
     public function show(Ticket $ticket)
     {
         Gate::authorize('view', $ticket);
-        
+
         $ticket->load(['property', 'user', 'assignedTo', 'comments.user']);
-        
+
         return view('tickets.show', compact('ticket'));
     }
 
@@ -95,7 +95,7 @@ class TicketController extends Controller
     public function edit(Ticket $ticket)
     {
         Gate::authorize('update', $ticket);
-        
+
         return view('tickets.edit', compact('ticket'));
     }
 
@@ -105,7 +105,7 @@ class TicketController extends Controller
     public function update(Request $request, Ticket $ticket)
     {
         Gate::authorize('update', $ticket);
-        
+
         $validated = $request->validate([
             'status' => 'nullable|in:submitted,assigned,in_progress,complete,closed',
             'assigned_to' => 'nullable|exists:users,id',
@@ -130,7 +130,7 @@ class TicketController extends Controller
     public function destroy(Ticket $ticket)
     {
         Gate::authorize('delete', $ticket);
-        
+
         $ticket->delete();
 
         return redirect()->route('tickets.index')
