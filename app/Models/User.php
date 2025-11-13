@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -44,5 +45,61 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get the properties for the user.
+     */
+    public function properties()
+    {
+        return $this->hasMany(Property::class);
+    }
+
+    /**
+     * Get the tickets submitted by the user.
+     */
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
+
+    /**
+     * Get the tickets assigned to the user.
+     */
+    public function assigned_tickets()
+    {
+        return $this->hasMany(Ticket::class, 'assigned_to');
+    }
+
+    /**
+     * Get the comments made by the user.
+     */
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    /**
+     * Check if user is homeowner.
+     */
+    public function isHomeowner(): bool
+    {
+        return $this->role === 'homeowner';
+    }
+
+    /**
+     * Check if user is builder/manager.
+     */
+    public function isBuilder(): bool
+    {
+        return $this->role === 'builder';
+    }
+
+    /**
+     * Check if user is admin.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
     }
 }
