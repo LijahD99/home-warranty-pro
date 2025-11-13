@@ -1,59 +1,280 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# HomeWarranty Pro - MVP
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A secure, efficient, and maintainable web application for managing home warranty tickets, built with Laravel 12 and Filament.
 
-## About Laravel
+## 🎯 Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### User Roles & Authentication
+- **Homeowners**: Submit and track warranty tickets for their properties
+- **Builders/Managers**: Manage all tickets, assign work, update statuses
+- **System Admins**: Full system access and user management
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Core Functionality
+- ✅ Secure authentication with auto-assigned homeowner role on registration
+- ✅ Property/Home management for homeowners
+- ✅ Warranty ticket submission with image uploads
+- ✅ Role-based access control with Laravel Policies
+- ✅ Ticket status workflow (Submitted → Assigned → In Progress → Complete → Closed)
+- ✅ Filament admin panel for builders/managers
+- ✅ Comment system with public/internal visibility
+- ✅ Service layer architecture for business logic
+- ✅ Comprehensive unit tests
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🛠️ Technology Stack
 
-## Learning Laravel
+- **Framework**: Laravel 12
+- **Admin Panel**: Filament 4
+- **Authentication**: Laravel Breeze
+- **Database**: SQLite (development) / MySQL/PostgreSQL (production)
+- **Code Quality**: PHPStan, PHP-CS-Fixer
+- **Testing**: PHPUnit
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## 📋 Requirements
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- PHP 8.2+
+- Composer
+- Node.js & NPM
+- SQLite/MySQL/PostgreSQL
 
-## Laravel Sponsors
+## 🚀 Installation
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 1. Clone the repository
 
-### Premium Partners
+```bash
+git clone <repository-url>
+cd home-warranty-pro
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 2. Install dependencies
 
-## Contributing
+```bash
+composer install
+npm install
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 3. Environment setup
 
-## Code of Conduct
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Configure your database in `.env`:
 
-## Security Vulnerabilities
+```env
+DB_CONNECTION=sqlite
+# OR for MySQL
+# DB_CONNECTION=mysql
+# DB_HOST=127.0.0.1
+# DB_PORT=3306
+# DB_DATABASE=home_warranty_pro
+# DB_USERNAME=root
+# DB_PASSWORD=
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 4. Run migrations
 
-## License
+```bash
+php artisan migrate
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 5. Create storage link
+
+```bash
+php artisan storage:link
+```
+
+### 6. Build assets
+
+```bash
+npm run build
+# OR for development
+npm run dev
+```
+
+### 7. Start the development server
+
+```bash
+php artisan serve
+```
+
+Visit `http://localhost:8000` for the homeowner interface.
+Visit `http://localhost:8000/admin` for the builder/manager panel.
+
+## 👥 User Roles
+
+### Creating Test Users
+
+```bash
+php artisan tinker
+```
+
+```php
+// Create a homeowner
+$homeowner = \App\Models\User::factory()->create([
+    'email' => 'homeowner@example.com',
+    'role' => 'homeowner'
+]);
+
+// Create a builder
+$builder = \App\Models\User::factory()->create([
+    'email' => 'builder@example.com',
+    'role' => 'builder'
+]);
+
+// Create an admin
+$admin = \App\Models\User::factory()->create([
+    'email' => 'admin@example.com',
+    'role' => 'admin'
+]);
+```
+
+Default password for factory users: `password`
+
+## 🧪 Testing
+
+Run the full test suite:
+
+```bash
+php artisan test
+```
+
+Run specific tests:
+
+```bash
+php artisan test --filter=TicketServiceTest
+```
+
+## 🔍 Code Quality
+
+### Run PHPStan
+
+```bash
+./vendor/bin/phpstan analyse
+```
+
+### Run PHP-CS-Fixer
+
+```bash
+./vendor/bin/php-cs-fixer fix
+```
+
+## 📐 Architecture
+
+### Service Layer
+Business logic is encapsulated in service classes:
+- `App\Services\TicketService`: Handles ticket creation, status transitions, and assignments
+
+### Policies
+Authorization is managed through Laravel Policies:
+- `App\Policies\TicketPolicy`: Controls ticket access
+- `App\Policies\PropertyPolicy`: Controls property access
+
+### Middleware
+- `App\Http\Middleware\EnsureUserHasRole`: Role-based route protection
+
+## 📊 Database Schema
+
+### Users
+- id, name, email, password, role, timestamps
+
+### Properties
+- id, user_id, address, city, state, zip_code, notes, timestamps
+
+### Tickets
+- id, property_id, user_id, assigned_to, area_of_issue, description, image_path, status, timestamps
+
+### Comments
+- id, ticket_id, user_id, comment, is_internal, timestamps
+
+## 🌐 Deployment
+
+### Laravel Forge
+1. Create a new server on Laravel Forge
+2. Connect your repository
+3. Configure environment variables
+4. Set up database
+5. Deploy
+
+### Manual Deployment
+1. Upload code to server
+2. Run `composer install --optimize-autoloader --no-dev`
+3. Run `npm install && npm run build`
+4. Configure `.env` file
+5. Run `php artisan migrate --force`
+6. Set permissions: `chmod -R 755 storage bootstrap/cache`
+7. Create symbolic link: `php artisan storage:link`
+
+### Environment Configuration (Production)
+
+```env
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://yourdomain.com
+
+DB_CONNECTION=mysql
+DB_HOST=your-db-host
+DB_DATABASE=your-database
+DB_USERNAME=your-username
+DB_PASSWORD=your-password
+```
+
+## 📝 API Endpoints
+
+### Homeowner Routes
+- `GET /properties` - List properties
+- `POST /properties` - Create property
+- `GET /tickets` - List own tickets
+- `POST /tickets` - Create ticket
+- `GET /tickets/{ticket}` - View ticket
+- `POST /tickets/{ticket}/comments` - Add comment
+
+### Builder/Manager Routes (Filament Admin)
+- `GET /admin` - Admin dashboard
+- `GET /admin/tickets` - Manage all tickets
+- `GET /admin/users` - Manage users
+
+## 🔐 Security Features
+
+- Role-based access control (RBAC)
+- Laravel Policies for authorization
+- CSRF protection
+- Password hashing with bcrypt
+- Input validation and sanitization
+- Secure file uploads
+
+## 📚 Key Features Detail
+
+### Ticket Workflow
+The ticket status follows a strict state machine:
+1. **Submitted** → Can transition to: Assigned
+2. **Assigned** → Can transition to: In Progress
+3. **In Progress** → Can transition to: Complete
+4. **Complete** → Can transition to: Closed
+
+Invalid transitions will throw an exception.
+
+### Comment Visibility
+- **Public comments**: Visible to homeowners and builders
+- **Internal comments**: Only visible to builders and admins
+
+## 🤝 Contributing
+
+1. Follow PSR-12 coding standards
+2. Use snake_case for variables
+3. Write unit tests for new features
+4. Run code quality tools before committing
+
+## 📄 License
+
+This project is proprietary and confidential.
+
+## 👨‍💻 Developer
+
+Built to showcase modern Laravel application development practices including:
+- Clean Architecture
+- Repository/Service Pattern
+- Test-Driven Development
+- Code Quality Standards
+- Role-Based Access Control
+

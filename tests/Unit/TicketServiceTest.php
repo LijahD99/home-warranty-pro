@@ -54,7 +54,7 @@ class TicketServiceTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
 
         $ticket = Ticket::factory()->create(['status' => 'submitted']);
-        
+
         // Invalid transition: submitted -> complete (should go through assigned and in_progress first)
         $this->ticket_service->updateStatus($ticket, 'complete');
     }
