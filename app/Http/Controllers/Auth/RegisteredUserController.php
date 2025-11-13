@@ -39,6 +39,7 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role' => 'homeowner', // Auto-assign homeowner role on registration
         ]);
 
         event(new Registered($user));
