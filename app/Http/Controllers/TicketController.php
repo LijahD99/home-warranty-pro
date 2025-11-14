@@ -112,12 +112,12 @@ class TicketController extends Controller
         ]);
 
         if (isset($validated['status'])) {
-            $this->ticket_service->updateStatus($ticket, $validated['status']);
+            $ticket->transitionTo($validated['status']);
         }
 
         if (isset($validated['assigned_to'])) {
             $builder = \App\Models\User::findOrFail($validated['assigned_to']);
-            $this->ticket_service->assignTicket($ticket, $builder);
+            $ticket->assignTo($builder);
         }
 
         return redirect()->route('tickets.show', $ticket)

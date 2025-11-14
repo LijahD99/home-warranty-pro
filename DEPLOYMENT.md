@@ -38,7 +38,7 @@ Laravel Forge provides the easiest deployment process for Laravel applications.
    APP_ENV=production
    APP_DEBUG=false
    APP_URL=https://yourdomain.com
-   
+
    DB_CONNECTION=mysql
    DB_HOST=127.0.0.1
    DB_PORT=3306
