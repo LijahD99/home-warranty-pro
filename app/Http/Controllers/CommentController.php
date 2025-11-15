@@ -17,7 +17,7 @@ class CommentController extends Controller
         Gate::authorize('view', $ticket);
 
         $validated = $request->validate([
-            'comment' => 'required|string',
+            'comment' => 'required|string|min:3',
             'is_internal' => 'nullable|boolean',
         ]);
 
@@ -25,16 +25,20 @@ class CommentController extends Controller
         $user = $request->user();
 
         // Only builders and admins can mark comments as internal
+        // Silently force to false for homeowners instead of aborting
+        $isInternal = false;
         if (isset($validated['is_internal']) && $validated['is_internal']) {
-            if (!$user->isBuilder() && !$user->isAdmin()) {
-                abort(403, 'Only builders and admins can add internal comments.');
+            if ($user->isBuilder() || $user->isAdmin()) {
+                $isInternal = true;
             }
         }
 
-        $comment = new Comment($validated);
+        $comment = new Comment([
+            'comment' => $validated['comment'],
+            'is_internal' => $isInternal,
+        ]);
         $comment->ticket_id = $ticket->id;
         $comment->user_id = $user->id;
-        $comment->is_internal = $validated['is_internal'] ?? false;
         $comment->save();
 
         return redirect()->route('tickets.show', $ticket)

@@ -59,7 +59,7 @@ class TicketController extends Controller
         $validated = $request->validate([
             'property_id' => 'required|exists:properties,id',
             'area_of_issue' => 'required|string|max:255',
-            'description' => 'required|string',
+            'description' => 'required|string|min:10',
             'image' => 'nullable|image|max:2048',
         ]);
 
