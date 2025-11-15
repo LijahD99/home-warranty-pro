@@ -174,3 +174,12 @@ Must follow "Chicago style" TDD approach.
 - Migrations: `database/migrations/`
 - Factories: `database/factories/`
 - Tests: `tests/Unit/` and `tests/Feature/`
+
+
+## Documentation Updates
+
+The following documents should be updated as progress is made:
+(documentation index)[/DOCUMENTATION_INDEX.MD]
+(project review)[/PROJECT_REVIEW.MD]
+(quick start guide)[/QUICK_START_GUIDE.MD]
+(readme)[/README.MD]
