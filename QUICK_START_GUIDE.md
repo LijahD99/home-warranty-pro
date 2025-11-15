@@ -53,21 +53,28 @@ Visit: http://localhost:8000
 
 **⚠️ Important**: The application is ~70% complete. See `PROJECT_REVIEW.md` for detailed analysis.
 
+**Architecture**: DDD with Rich Domain Models + Lean Service Layer (services only when needed)
+
 ### What Works ✅
 - User authentication and registration
 - Database schema and migrations
-- Domain models with business logic
-- Role-based access control
+- Rich domain models with business logic (Ticket, Property, Comment, User)
+- Role-based access control via UserRole enum
 - Filament admin panel (basic)
-- Unit tests for models
+- Unit tests for models (using PHPUnit attributes)
+- State machine for ticket workflow
 
 ### What's Missing ❌
 - Homeowner user interface (no views)
-- TicketService implementation
-- Image upload functionality
 - Database seeders for demo
 - Feature tests
+- Image upload functionality
 - Email notifications
+
+### Known Issues 🔧
+- `tests/Unit/TicketServiceTest.php` is obsolete (delete this file)
+  - Service was removed in favor of rich domain models
+  - Business logic lives in `Ticket`, `Property`, `Comment` models
 
 ## 📝 Test Accounts
 
@@ -103,10 +110,10 @@ Default password: `password`
 
 To make this a fully functional demo, follow the action plan in `PROJECT_REVIEW.md`:
 
-**Phase 1 (Critical - 3 days)**:
-1. Create TicketService
+**Phase 1 (Critical - 2 days)**:
+1. Delete obsolete TicketServiceTest
 2. Build homeowner views (properties, tickets)
-3. Complete controllers
+3. Complete controllers (thin, delegate to models)
 4. Add database seeders
 
 **Phase 2 (Features - 3 days)**:
@@ -121,8 +128,11 @@ To make this a fully functional demo, follow the action plan in `PROJECT_REVIEW.
 3. Documentation
 4. Security review
 
+**Total**: 7 days to demo-ready
+
 ## 📚 Documentation
 
+- **.github/copilot-instructions.md** - Architecture guidelines and conventions
 - **PROJECT_REVIEW.md** - Comprehensive analysis and action plan
 - **README.md** - Project overview and features
 - **DEPLOYMENT.md** - Production deployment guide
@@ -148,6 +158,8 @@ php artisan view:clear
 
 ## 🏗️ Architecture
 
+**Domain-Driven Design with Rich Domain Models**
+
 ```
 Homeowners → Properties → Tickets → Comments
                               ↓
@@ -156,12 +168,18 @@ Homeowners → Properties → Tickets → Comments
                       Builders/Managers
 ```
 
-**User Roles**:
+**Layers**:
+- **Domain Layer**: Models with business logic (Ticket, Property, Comment, User)
+- **Service Layer**: Lean - only for complex cross-cutting operations
+- **Presentation**: Thin controllers delegating to domain models
+- **Authorization**: Policies enforcing role-based rules
+
+**User Roles** (UserRole enum):
 - **Homeowner**: Creates properties and tickets
 - **Builder**: Manages tickets, adds internal comments
 - **Admin**: Full system access
 
-**Ticket Workflow**:
+**Ticket Workflow** (State machine in Ticket model):
 ```
 Submitted → Assigned → In Progress → Complete → Closed
 ```
@@ -170,15 +188,15 @@ Submitted → Assigned → In Progress → Complete → Closed
 
 See `PROJECT_REVIEW.md` Section 2 for detailed list. Critical issues:
 
-1. **Missing TicketService** - Referenced in tests but doesn't exist
+1. **Orphaned TicketServiceTest** - Delete this file (service intentionally removed)
 2. **No Homeowner UI** - No views for properties/tickets management
-3. **Incomplete Controllers** - May need implementation
+3. **Controllers** - Need verification they're thin and delegate to models
 4. **No Demo Data** - No seeders for quick testing
 
 ## 🆘 Troubleshooting
 
 ### "Class TicketService not found"
-This is expected - the service needs to be created. See PROJECT_REVIEW.md section 2.1.
+This is expected - the service was intentionally deleted. The app uses rich domain models instead. Delete `tests/Unit/TicketServiceTest.php` to remove this error.
 
 ### "No views found"
 Homeowner views haven't been created yet. Admin panel works at `/admin`.
@@ -204,5 +222,6 @@ For detailed implementation guidance, refer to:
 ---
 
 **Status**: 🟡 In Development  
+**Architecture**: DDD with Rich Domain Models  
 **Completion**: ~70%  
-**Estimated to Demo-Ready**: 8 days (see PROJECT_REVIEW.md)
+**Estimated to Demo-Ready**: 7 days (see PROJECT_REVIEW.md)
