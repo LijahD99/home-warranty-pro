@@ -8,13 +8,14 @@ use App\Models\Property;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class PropertyModelTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[Test]
     public function it_validates_zip_code_on_creation(): void
     {
         $this->expectException(InvalidPropertyException::class);
@@ -30,7 +31,7 @@ class PropertyModelTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_accepts_valid_five_digit_zip_code(): void
     {
         $user = User::factory()->create();
@@ -45,7 +46,7 @@ class PropertyModelTest extends TestCase
         $this->assertEquals('78701', $property->zip_code);
     }
 
-    /** @test */
+    #[Test]
     public function it_accepts_valid_zip_plus_four_format(): void
     {
         $user = User::factory()->create();
@@ -60,7 +61,7 @@ class PropertyModelTest extends TestCase
         $this->assertEquals('78701-1234', $property->zip_code);
     }
 
-    /** @test */
+    #[Test]
     public function it_validates_state_code_on_creation(): void
     {
         $this->expectException(InvalidPropertyException::class);
@@ -76,7 +77,7 @@ class PropertyModelTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_accepts_all_valid_us_state_codes(): void
     {
         $user = User::factory()->create();
@@ -96,7 +97,7 @@ class PropertyModelTest extends TestCase
         }
     }
 
-    /** @test */
+    #[Test]
     public function it_can_check_if_owned_by_user(): void
     {
         $owner = User::factory()->create();
@@ -107,7 +108,7 @@ class PropertyModelTest extends TestCase
         $this->assertFalse($property->isOwnedBy($otherUser));
     }
 
-    /** @test */
+    #[Test]
     public function it_allows_owner_to_modify_property(): void
     {
         $owner = User::factory()->create(['role' => UserRole::HOMEOWNER]);
@@ -116,7 +117,7 @@ class PropertyModelTest extends TestCase
         $this->assertTrue($property->canBeModifiedBy($owner));
     }
 
-    /** @test */
+    #[Test]
     public function it_allows_admin_to_modify_any_property(): void
     {
         $admin = User::factory()->create(['role' => UserRole::ADMIN]);
@@ -126,7 +127,7 @@ class PropertyModelTest extends TestCase
         $this->assertTrue($property->canBeModifiedBy($admin));
     }
 
-    /** @test */
+    #[Test]
     public function it_prevents_non_owner_from_modifying_property(): void
     {
         $owner = User::factory()->create(['role' => UserRole::HOMEOWNER]);
@@ -136,7 +137,7 @@ class PropertyModelTest extends TestCase
         $this->assertFalse($property->canBeModifiedBy($otherUser));
     }
 
-    /** @test */
+    #[Test]
     public function it_ensures_property_is_owned_by_user(): void
     {
         $owner = User::factory()->create();
@@ -146,7 +147,7 @@ class PropertyModelTest extends TestCase
         $this->assertTrue(true); // No exception thrown
     }
 
-    /** @test */
+    #[Test]
     public function it_throws_exception_when_ensuring_ownership_fails(): void
     {
         $this->expectException(InvalidPropertyException::class);
@@ -159,7 +160,7 @@ class PropertyModelTest extends TestCase
         $property->ensureOwnedBy($otherUser);
     }
 
-    /** @test */
+    #[Test]
     public function it_allows_admin_when_ensuring_ownership(): void
     {
         $owner = User::factory()->create(['role' => UserRole::HOMEOWNER]);
@@ -170,7 +171,7 @@ class PropertyModelTest extends TestCase
         $this->assertTrue(true); // No exception thrown
     }
 
-    /** @test */
+    #[Test]
     public function it_can_check_if_property_has_tickets(): void
     {
         $property = Property::factory()->create();
@@ -182,7 +183,7 @@ class PropertyModelTest extends TestCase
         $this->assertTrue($property->fresh()->hasTickets());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_get_tickets_count(): void
     {
         $property = Property::factory()->create();
@@ -191,7 +192,7 @@ class PropertyModelTest extends TestCase
         $this->assertEquals(3, $property->fresh()->getTicketsCount());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_check_if_property_has_open_tickets(): void
     {
         $property = Property::factory()->create();
@@ -206,7 +207,7 @@ class PropertyModelTest extends TestCase
         $this->assertTrue($property->fresh()->hasOpenTickets());
     }
 
-    /** @test */
+    #[Test]
     public function it_does_not_count_closed_tickets_as_open(): void
     {
         $property = Property::factory()->create();
@@ -220,7 +221,7 @@ class PropertyModelTest extends TestCase
         $this->assertEquals(0, $property->fresh()->getOpenTicketsCount());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_get_open_tickets_count(): void
     {
         $property = Property::factory()->create();
@@ -232,7 +233,7 @@ class PropertyModelTest extends TestCase
         $this->assertEquals(2, $property->fresh()->getOpenTicketsCount());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_be_deleted_when_no_open_tickets(): void
     {
         $property = Property::factory()->create();
@@ -240,7 +241,7 @@ class PropertyModelTest extends TestCase
         $this->assertTrue($property->canBeDeleted());
     }
 
-    /** @test */
+    #[Test]
     public function it_cannot_be_deleted_when_has_open_tickets(): void
     {
         $property = Property::factory()->create();
@@ -252,7 +253,7 @@ class PropertyModelTest extends TestCase
         $this->assertFalse($property->fresh()->canBeDeleted());
     }
 
-    /** @test */
+    #[Test]
     public function it_ensures_property_can_be_deleted(): void
     {
         $property = Property::factory()->create();
@@ -261,7 +262,7 @@ class PropertyModelTest extends TestCase
         $this->assertTrue(true); // No exception thrown
     }
 
-    /** @test */
+    #[Test]
     public function it_throws_exception_when_deleting_property_with_open_tickets(): void
     {
         $this->expectException(InvalidPropertyException::class);
@@ -276,7 +277,7 @@ class PropertyModelTest extends TestCase
         $property->fresh()->ensureCanBeDeleted();
     }
 
-    /** @test */
+    #[Test]
     public function it_can_be_deleted_when_only_closed_tickets_exist(): void
     {
         $property = Property::factory()->create();
@@ -288,7 +289,7 @@ class PropertyModelTest extends TestCase
         $this->assertTrue($property->fresh()->canBeDeleted());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_get_full_address(): void
     {
         $property = Property::factory()->create([
@@ -301,7 +302,7 @@ class PropertyModelTest extends TestCase
         $this->assertEquals('123 Main St, Austin, TX 78701', $property->getFullAddress());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_update_details_with_validation(): void
     {
         $property = Property::factory()->create([
@@ -322,7 +323,7 @@ class PropertyModelTest extends TestCase
         $this->assertEquals('75201', $property->zip_code);
     }
 
-    /** @test */
+    #[Test]
     public function it_validates_when_updating_details(): void
     {
         $this->expectException(InvalidPropertyException::class);
@@ -339,7 +340,7 @@ class PropertyModelTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_validates_on_update(): void
     {
         $this->expectException(InvalidPropertyException::class);

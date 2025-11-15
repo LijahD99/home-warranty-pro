@@ -8,13 +8,14 @@ use App\Models\Comment;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class CommentModelTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[Test]
     public function it_can_create_a_comment(): void
     {
         $user = User::factory()->create();
@@ -29,7 +30,7 @@ class CommentModelTest extends TestCase
         $this->assertFalse($comment->is_internal);
     }
 
-    /** @test */
+    #[Test]
     public function it_throws_exception_for_empty_comment(): void
     {
         $this->expectException(InvalidCommentException::class);
@@ -41,7 +42,7 @@ class CommentModelTest extends TestCase
         Comment::createComment($ticket, $user, '');
     }
 
-    /** @test */
+    #[Test]
     public function it_throws_exception_for_whitespace_only_comment(): void
     {
         $this->expectException(InvalidCommentException::class);
@@ -53,7 +54,7 @@ class CommentModelTest extends TestCase
         Comment::createComment($ticket, $user, '   ');
     }
 
-    /** @test */
+    #[Test]
     public function it_can_create_internal_comment_as_builder(): void
     {
         $builder = User::factory()->create(['role' => UserRole::BUILDER]);
@@ -64,7 +65,7 @@ class CommentModelTest extends TestCase
         $this->assertTrue($comment->is_internal);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_create_internal_comment_as_admin(): void
     {
         $admin = User::factory()->create(['role' => UserRole::ADMIN]);
@@ -75,7 +76,7 @@ class CommentModelTest extends TestCase
         $this->assertTrue($comment->is_internal);
     }
 
-    /** @test */
+    #[Test]
     public function it_prevents_homeowner_from_creating_internal_comment(): void
     {
         $this->expectException(InvalidCommentException::class);
@@ -87,7 +88,7 @@ class CommentModelTest extends TestCase
         Comment::createComment($ticket, $homeowner, 'Trying to be internal', true);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_check_if_authored_by_user(): void
     {
         $author = User::factory()->create();
@@ -100,7 +101,7 @@ class CommentModelTest extends TestCase
         $this->assertFalse($comment->isAuthoredBy($otherUser));
     }
 
-    /** @test */
+    #[Test]
     public function it_allows_author_to_edit_comment(): void
     {
         $author = User::factory()->create();
@@ -110,7 +111,7 @@ class CommentModelTest extends TestCase
         $this->assertTrue($comment->canBeEditedBy($author));
     }
 
-    /** @test */
+    #[Test]
     public function it_allows_admin_to_edit_any_comment(): void
     {
         $author = User::factory()->create(['role' => UserRole::HOMEOWNER]);
@@ -121,7 +122,7 @@ class CommentModelTest extends TestCase
         $this->assertTrue($comment->canBeEditedBy($admin));
     }
 
-    /** @test */
+    #[Test]
     public function it_prevents_non_author_from_editing_comment(): void
     {
         $author = User::factory()->create();
@@ -132,7 +133,7 @@ class CommentModelTest extends TestCase
         $this->assertFalse($comment->canBeEditedBy($otherUser));
     }
 
-    /** @test */
+    #[Test]
     public function it_can_update_comment_text(): void
     {
         $author = User::factory()->create();
@@ -144,7 +145,7 @@ class CommentModelTest extends TestCase
         $this->assertEquals('Updated text', $comment->comment);
     }
 
-    /** @test */
+    #[Test]
     public function it_throws_exception_when_non_author_updates_text(): void
     {
         $this->expectException(InvalidCommentException::class);
@@ -158,7 +159,7 @@ class CommentModelTest extends TestCase
         $comment->updateText('Hacked text', $otherUser);
     }
 
-    /** @test */
+    #[Test]
     public function it_allows_admin_to_update_comment_text(): void
     {
         $author = User::factory()->create(['role' => UserRole::HOMEOWNER]);
@@ -171,7 +172,7 @@ class CommentModelTest extends TestCase
         $this->assertEquals('Admin edited text', $comment->comment);
     }
 
-    /** @test */
+    #[Test]
     public function it_validates_comment_text_on_update(): void
     {
         $this->expectException(InvalidCommentException::class);
@@ -183,7 +184,7 @@ class CommentModelTest extends TestCase
         $comment->updateText('', $author);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_check_if_comment_is_internal(): void
     {
         $builder = User::factory()->create(['role' => UserRole::BUILDER]);
@@ -196,7 +197,7 @@ class CommentModelTest extends TestCase
         $this->assertFalse($publicComment->isInternal());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_check_if_comment_is_public(): void
     {
         $builder = User::factory()->create(['role' => UserRole::BUILDER]);
@@ -209,7 +210,7 @@ class CommentModelTest extends TestCase
         $this->assertTrue($publicComment->isPublic());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_mark_comment_as_internal(): void
     {
         $builder = User::factory()->create(['role' => UserRole::BUILDER]);
@@ -221,7 +222,7 @@ class CommentModelTest extends TestCase
         $this->assertTrue($comment->is_internal);
     }
 
-    /** @test */
+    #[Test]
     public function it_prevents_homeowner_from_marking_as_internal(): void
     {
         $this->expectException(InvalidCommentException::class);
@@ -233,7 +234,7 @@ class CommentModelTest extends TestCase
         $comment->markAsInternal($homeowner);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_mark_comment_as_public(): void
     {
         $builder = User::factory()->create(['role' => UserRole::BUILDER]);
@@ -245,7 +246,7 @@ class CommentModelTest extends TestCase
         $this->assertFalse($comment->is_internal);
     }
 
-    /** @test */
+    #[Test]
     public function it_allows_builder_to_view_internal_comments(): void
     {
         $builder = User::factory()->create(['role' => UserRole::BUILDER]);
@@ -255,7 +256,7 @@ class CommentModelTest extends TestCase
         $this->assertTrue($comment->canBeViewedBy($builder));
     }
 
-    /** @test */
+    #[Test]
     public function it_allows_admin_to_view_internal_comments(): void
     {
         $builder = User::factory()->create(['role' => UserRole::BUILDER]);
@@ -266,7 +267,7 @@ class CommentModelTest extends TestCase
         $this->assertTrue($comment->canBeViewedBy($admin));
     }
 
-    /** @test */
+    #[Test]
     public function it_prevents_homeowner_from_viewing_internal_comments(): void
     {
         $builder = User::factory()->create(['role' => UserRole::BUILDER]);
@@ -277,7 +278,7 @@ class CommentModelTest extends TestCase
         $this->assertFalse($comment->canBeViewedBy($homeowner));
     }
 
-    /** @test */
+    #[Test]
     public function it_allows_anyone_to_view_public_comments(): void
     {
         $author = User::factory()->create(['role' => UserRole::BUILDER]);
@@ -289,7 +290,7 @@ class CommentModelTest extends TestCase
         $this->assertTrue($comment->canBeViewedBy($author));
     }
 
-    /** @test */
+    #[Test]
     public function it_allows_author_to_delete_comment(): void
     {
         $author = User::factory()->create();
@@ -299,7 +300,7 @@ class CommentModelTest extends TestCase
         $this->assertTrue($comment->canBeDeletedBy($author));
     }
 
-    /** @test */
+    #[Test]
     public function it_allows_admin_to_delete_any_comment(): void
     {
         $author = User::factory()->create(['role' => UserRole::HOMEOWNER]);
@@ -310,7 +311,7 @@ class CommentModelTest extends TestCase
         $this->assertTrue($comment->canBeDeletedBy($admin));
     }
 
-    /** @test */
+    #[Test]
     public function it_prevents_non_author_from_deleting_comment(): void
     {
         $author = User::factory()->create();
@@ -321,7 +322,7 @@ class CommentModelTest extends TestCase
         $this->assertFalse($comment->canBeDeletedBy($otherUser));
     }
 
-    /** @test */
+    #[Test]
     public function it_ensures_user_can_delete_comment(): void
     {
         $author = User::factory()->create();
@@ -332,7 +333,7 @@ class CommentModelTest extends TestCase
         $this->assertTrue(true); // No exception thrown
     }
 
-    /** @test */
+    #[Test]
     public function it_throws_exception_when_user_cannot_delete_comment(): void
     {
         $this->expectException(InvalidCommentException::class);

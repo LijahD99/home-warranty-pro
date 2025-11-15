@@ -8,13 +8,14 @@ use App\Models\Property;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class UserModelTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[Test]
     public function it_can_check_if_user_is_homeowner(): void
     {
         $homeowner = User::factory()->create(['role' => UserRole::HOMEOWNER]);
@@ -24,7 +25,7 @@ class UserModelTest extends TestCase
         $this->assertFalse($builder->isHomeowner());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_check_if_user_is_builder(): void
     {
         $builder = User::factory()->create(['role' => UserRole::BUILDER]);
@@ -34,7 +35,7 @@ class UserModelTest extends TestCase
         $this->assertFalse($homeowner->isBuilder());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_check_if_user_is_admin(): void
     {
         $admin = User::factory()->create(['role' => UserRole::ADMIN]);
@@ -44,7 +45,7 @@ class UserModelTest extends TestCase
         $this->assertFalse($homeowner->isAdmin());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_check_if_user_has_specific_role(): void
     {
         $homeowner = User::factory()->create(['role' => UserRole::HOMEOWNER]);
@@ -53,7 +54,7 @@ class UserModelTest extends TestCase
         $this->assertFalse($homeowner->hasRole(UserRole::BUILDER));
     }
 
-    /** @test */
+    #[Test]
     public function it_can_check_if_user_has_any_of_given_roles(): void
     {
         $builder = User::factory()->create(['role' => UserRole::BUILDER]);
@@ -62,7 +63,7 @@ class UserModelTest extends TestCase
         $this->assertFalse($builder->hasAnyRole([UserRole::HOMEOWNER, UserRole::ADMIN]));
     }
 
-    /** @test */
+    #[Test]
     public function homeowner_can_create_properties(): void
     {
         $homeowner = User::factory()->create(['role' => UserRole::HOMEOWNER]);
@@ -70,7 +71,7 @@ class UserModelTest extends TestCase
         $this->assertTrue($homeowner->role->canCreateProperties());
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_create_properties(): void
     {
         $admin = User::factory()->create(['role' => UserRole::ADMIN]);
@@ -78,7 +79,7 @@ class UserModelTest extends TestCase
         $this->assertTrue($admin->role->canCreateProperties());
     }
 
-    /** @test */
+    #[Test]
     public function builder_cannot_create_properties(): void
     {
         $builder = User::factory()->create(['role' => UserRole::BUILDER]);
@@ -86,7 +87,7 @@ class UserModelTest extends TestCase
         $this->assertFalse($builder->role->canCreateProperties());
     }
 
-    /** @test */
+    #[Test]
     public function homeowner_can_create_tickets(): void
     {
         $homeowner = User::factory()->create(['role' => UserRole::HOMEOWNER]);
@@ -94,7 +95,7 @@ class UserModelTest extends TestCase
         $this->assertTrue($homeowner->role->canCreateTickets());
     }
 
-    /** @test */
+    #[Test]
     public function builder_cannot_create_tickets(): void
     {
         $builder = User::factory()->create(['role' => UserRole::BUILDER]);
@@ -102,7 +103,7 @@ class UserModelTest extends TestCase
         $this->assertFalse($builder->role->canCreateTickets());
     }
 
-    /** @test */
+    #[Test]
     public function builder_can_be_assigned_tickets(): void
     {
         $builder = User::factory()->create(['role' => UserRole::BUILDER]);
@@ -110,7 +111,7 @@ class UserModelTest extends TestCase
         $this->assertTrue($builder->role->canBeAssignedTickets());
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_be_assigned_tickets(): void
     {
         $admin = User::factory()->create(['role' => UserRole::ADMIN]);
@@ -118,7 +119,7 @@ class UserModelTest extends TestCase
         $this->assertTrue($admin->role->canBeAssignedTickets());
     }
 
-    /** @test */
+    #[Test]
     public function homeowner_cannot_be_assigned_tickets(): void
     {
         $homeowner = User::factory()->create(['role' => UserRole::HOMEOWNER]);
@@ -126,7 +127,7 @@ class UserModelTest extends TestCase
         $this->assertFalse($homeowner->role->canBeAssignedTickets());
     }
 
-    /** @test */
+    #[Test]
     public function builder_can_create_internal_comments(): void
     {
         $builder = User::factory()->create(['role' => UserRole::BUILDER]);
@@ -134,7 +135,7 @@ class UserModelTest extends TestCase
         $this->assertTrue($builder->role->canCreateInternalComments());
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_create_internal_comments(): void
     {
         $admin = User::factory()->create(['role' => UserRole::ADMIN]);
@@ -142,7 +143,7 @@ class UserModelTest extends TestCase
         $this->assertTrue($admin->role->canCreateInternalComments());
     }
 
-    /** @test */
+    #[Test]
     public function homeowner_cannot_create_internal_comments(): void
     {
         $homeowner = User::factory()->create(['role' => UserRole::HOMEOWNER]);
@@ -150,7 +151,7 @@ class UserModelTest extends TestCase
         $this->assertFalse($homeowner->role->canCreateInternalComments());
     }
 
-    /** @test */
+    #[Test]
     public function builder_can_view_all_tickets(): void
     {
         $builder = User::factory()->create(['role' => UserRole::BUILDER]);
@@ -158,7 +159,7 @@ class UserModelTest extends TestCase
         $this->assertTrue($builder->role->canViewAllTickets());
     }
 
-    /** @test */
+    #[Test]
     public function admin_can_view_all_tickets(): void
     {
         $admin = User::factory()->create(['role' => UserRole::ADMIN]);
@@ -166,7 +167,7 @@ class UserModelTest extends TestCase
         $this->assertTrue($admin->role->canViewAllTickets());
     }
 
-    /** @test */
+    #[Test]
     public function homeowner_cannot_view_all_tickets(): void
     {
         $homeowner = User::factory()->create(['role' => UserRole::HOMEOWNER]);
@@ -174,7 +175,7 @@ class UserModelTest extends TestCase
         $this->assertFalse($homeowner->role->canViewAllTickets());
     }
 
-    /** @test */
+    #[Test]
     public function only_admin_can_manage_users(): void
     {
         $admin = User::factory()->create(['role' => UserRole::ADMIN]);
@@ -186,7 +187,7 @@ class UserModelTest extends TestCase
         $this->assertFalse($homeowner->role->canManageUsers());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_get_properties_count(): void
     {
         $user = User::factory()->create();
@@ -195,7 +196,7 @@ class UserModelTest extends TestCase
         $this->assertEquals(3, $user->getPropertiesCount());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_get_submitted_tickets_count(): void
     {
         $user = User::factory()->create();
@@ -204,7 +205,7 @@ class UserModelTest extends TestCase
         $this->assertEquals(5, $user->getSubmittedTicketsCount());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_get_assigned_tickets_count(): void
     {
         $builder = User::factory()->create(['role' => UserRole::BUILDER]);
@@ -213,7 +214,7 @@ class UserModelTest extends TestCase
         $this->assertEquals(4, $builder->getAssignedTicketsCount());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_get_open_assigned_tickets_count(): void
     {
         $builder = User::factory()->create(['role' => UserRole::BUILDER]);
@@ -225,7 +226,7 @@ class UserModelTest extends TestCase
         $this->assertEquals(2, $builder->getOpenAssignedTicketsCount());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_get_comments_count(): void
     {
         $user = User::factory()->create();
@@ -237,7 +238,7 @@ class UserModelTest extends TestCase
         $this->assertEquals(2, $user->getCommentsCount());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_check_if_user_has_properties(): void
     {
         $userWithProperty = User::factory()->create();
@@ -249,7 +250,7 @@ class UserModelTest extends TestCase
         $this->assertFalse($userWithoutProperty->hasProperties());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_check_if_user_has_open_tickets(): void
     {
         $user = User::factory()->create();
@@ -261,7 +262,7 @@ class UserModelTest extends TestCase
         $this->assertTrue($user->fresh()->hasOpenTickets());
     }
 
-    /** @test */
+    #[Test]
     public function it_does_not_count_closed_tickets_as_open(): void
     {
         $user = User::factory()->create();
@@ -271,7 +272,7 @@ class UserModelTest extends TestCase
         $this->assertFalse($user->fresh()->hasOpenTickets());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_check_if_user_has_assigned_tickets(): void
     {
         $builder = User::factory()->create(['role' => UserRole::BUILDER]);
@@ -283,7 +284,7 @@ class UserModelTest extends TestCase
         $this->assertTrue($builder->fresh()->hasAssignedTickets());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_get_role_display_name(): void
     {
         $homeowner = User::factory()->create(['role' => UserRole::HOMEOWNER]);
@@ -295,7 +296,7 @@ class UserModelTest extends TestCase
         $this->assertEquals('Administrator', $admin->getRoleDisplayName());
     }
 
-    /** @test */
+    #[Test]
     public function it_has_assigned_tickets_relationship(): void
     {
         $builder = User::factory()->create(['role' => UserRole::BUILDER]);
