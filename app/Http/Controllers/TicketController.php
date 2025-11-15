@@ -3,15 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ticket;
-use App\Services\TicketService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
 class TicketController extends Controller
 {
-    public function __construct(
-        protected TicketService $ticket_service
-    ) {}
 
     /**
      * Display a listing of the resource.
@@ -71,7 +67,13 @@ class TicketController extends Controller
         $user = $request->user();
         $validated['user_id'] = $user->id;
 
-        $ticket = $this->ticket_service->createTicket($validated);
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $validated['image_path'] = $request->file('image')->store('tickets', 'public');
+            unset($validated['image']);
+        }
+
+        $ticket = Ticket::create($validated);
 
         return redirect()->route('tickets.index')
             ->with('success', 'Ticket submitted successfully!');

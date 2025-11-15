@@ -23,6 +23,10 @@ class Ticket extends Model
         'status',
     ];
 
+    protected $attributes = [
+        'status' => 'submitted',
+    ];
+
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
