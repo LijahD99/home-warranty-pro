@@ -9,13 +9,14 @@ use App\Models\Property;
 use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class TicketModelTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
+    #[Test]
     public function it_can_transition_from_submitted_to_assigned(): void
     {
         $ticket = Ticket::factory()->create(['status' => 'submitted']);
@@ -25,7 +26,7 @@ class TicketModelTest extends TestCase
         $this->assertEquals('assigned', $ticket->status);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_transition_from_assigned_to_in_progress(): void
     {
         $ticket = Ticket::factory()->create(['status' => 'assigned']);
@@ -35,7 +36,7 @@ class TicketModelTest extends TestCase
         $this->assertEquals('in_progress', $ticket->status);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_transition_from_in_progress_to_complete(): void
     {
         $ticket = Ticket::factory()->create(['status' => 'in_progress']);
@@ -45,7 +46,7 @@ class TicketModelTest extends TestCase
         $this->assertEquals('complete', $ticket->status);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_transition_from_complete_to_closed(): void
     {
         $ticket = Ticket::factory()->create(['status' => 'complete']);
@@ -55,7 +56,7 @@ class TicketModelTest extends TestCase
         $this->assertEquals('closed', $ticket->status);
     }
 
-    /** @test */
+    #[Test]
     public function it_throws_exception_on_invalid_transition(): void
     {
         $this->expectException(InvalidStatusTransitionException::class);
@@ -65,7 +66,7 @@ class TicketModelTest extends TestCase
         $ticket->transitionTo('complete');
     }
 
-    /** @test */
+    #[Test]
     public function it_throws_exception_when_transitioning_from_closed(): void
     {
         $this->expectException(InvalidStatusTransitionException::class);
@@ -74,7 +75,7 @@ class TicketModelTest extends TestCase
         $ticket->transitionTo('assigned');
     }
 
-    /** @test */
+    #[Test]
     public function it_can_assign_to_builder(): void
     {
         $builder = User::factory()->create(['role' => UserRole::BUILDER]);
@@ -86,7 +87,7 @@ class TicketModelTest extends TestCase
         $this->assertEquals('assigned', $ticket->status);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_assign_to_admin(): void
     {
         $admin = User::factory()->create(['role' => UserRole::ADMIN]);
@@ -98,7 +99,7 @@ class TicketModelTest extends TestCase
         $this->assertEquals('assigned', $ticket->status);
     }
 
-    /** @test */
+    #[Test]
     public function it_cannot_assign_to_homeowner(): void
     {
         $this->expectException(InvalidTicketAssignmentException::class);
@@ -110,7 +111,7 @@ class TicketModelTest extends TestCase
         $ticket->assignTo($homeowner);
     }
 
-    /** @test */
+    #[Test]
     public function it_cannot_assign_ticket_that_is_not_submitted(): void
     {
         $this->expectException(InvalidTicketAssignmentException::class);
@@ -122,7 +123,7 @@ class TicketModelTest extends TestCase
         $ticket->assignTo($builder);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_start_progress(): void
     {
         $ticket = Ticket::factory()->create(['status' => 'assigned']);
@@ -132,7 +133,7 @@ class TicketModelTest extends TestCase
         $this->assertEquals('in_progress', $ticket->status);
     }
 
-    /** @test */
+    #[Test]
     public function it_cannot_start_progress_if_not_assigned(): void
     {
         $this->expectException(InvalidStatusTransitionException::class);
@@ -141,7 +142,7 @@ class TicketModelTest extends TestCase
         $ticket->startProgress();
     }
 
-    /** @test */
+    #[Test]
     public function it_can_mark_as_complete(): void
     {
         $ticket = Ticket::factory()->create(['status' => 'in_progress']);
@@ -151,7 +152,7 @@ class TicketModelTest extends TestCase
         $this->assertEquals('complete', $ticket->status);
     }
 
-    /** @test */
+    #[Test]
     public function it_cannot_mark_as_complete_if_not_in_progress(): void
     {
         $this->expectException(InvalidStatusTransitionException::class);
@@ -160,7 +161,7 @@ class TicketModelTest extends TestCase
         $ticket->markAsComplete();
     }
 
-    /** @test */
+    #[Test]
     public function it_can_close_ticket(): void
     {
         $ticket = Ticket::factory()->create(['status' => 'complete']);
@@ -170,7 +171,7 @@ class TicketModelTest extends TestCase
         $this->assertEquals('closed', $ticket->status);
     }
 
-    /** @test */
+    #[Test]
     public function it_cannot_close_if_not_complete(): void
     {
         $this->expectException(InvalidStatusTransitionException::class);
@@ -179,7 +180,7 @@ class TicketModelTest extends TestCase
         $ticket->close();
     }
 
-    /** @test */
+    #[Test]
     public function it_can_check_if_ticket_is_open(): void
     {
         $openTicket = Ticket::factory()->create(['status' => 'submitted']);
@@ -189,7 +190,7 @@ class TicketModelTest extends TestCase
         $this->assertFalse($closedTicket->isOpen());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_check_if_ticket_is_assigned(): void
     {
         $builder = User::factory()->create(['role' => UserRole::BUILDER]);
@@ -206,7 +207,7 @@ class TicketModelTest extends TestCase
         $this->assertFalse($unassignedTicket->isAssigned());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_check_if_ticket_is_in_progress(): void
     {
         $inProgressTicket = Ticket::factory()->create(['status' => 'in_progress']);
@@ -216,7 +217,7 @@ class TicketModelTest extends TestCase
         $this->assertFalse($submittedTicket->isInProgress());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_check_if_ticket_is_complete(): void
     {
         $completeTicket = Ticket::factory()->create(['status' => 'complete']);
@@ -226,7 +227,7 @@ class TicketModelTest extends TestCase
         $this->assertFalse($inProgressTicket->isComplete());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_get_valid_next_statuses(): void
     {
         $submittedTicket = Ticket::factory()->create(['status' => 'submitted']);
@@ -238,7 +239,7 @@ class TicketModelTest extends TestCase
         $this->assertEquals([], $closedTicket->getValidNextStatuses());
     }
 
-    /** @test */
+    #[Test]
     public function it_can_check_if_status_transition_is_valid(): void
     {
         $ticket = Ticket::factory()->create(['status' => 'submitted']);
@@ -248,7 +249,7 @@ class TicketModelTest extends TestCase
         $this->assertFalse($ticket->canTransitionTo('complete'));
     }
 
-    /** @test */
+    #[Test]
     public function it_can_reassign_to_different_builder(): void
     {
         $builder1 = User::factory()->create(['role' => UserRole::BUILDER]);
@@ -265,7 +266,7 @@ class TicketModelTest extends TestCase
         $this->assertEquals('assigned', $ticket->status);
     }
 
-    /** @test */
+    #[Test]
     public function it_cannot_reassign_unassigned_ticket(): void
     {
         $this->expectException(InvalidTicketAssignmentException::class);
