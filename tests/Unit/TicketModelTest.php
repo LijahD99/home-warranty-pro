@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Enums\UserRole;
 use App\Exceptions\InvalidStatusTransitionException;
 use App\Exceptions\InvalidTicketAssignmentException;
 use App\Models\Property;
@@ -76,7 +77,7 @@ class TicketModelTest extends TestCase
     /** @test */
     public function it_can_assign_to_builder(): void
     {
-        $builder = User::factory()->create(['role' => 'builder']);
+        $builder = User::factory()->create(['role' => UserRole::BUILDER]);
         $ticket = Ticket::factory()->create(['status' => 'submitted']);
 
         $ticket->assignTo($builder);
@@ -88,7 +89,7 @@ class TicketModelTest extends TestCase
     /** @test */
     public function it_can_assign_to_admin(): void
     {
-        $admin = User::factory()->create(['role' => 'admin']);
+        $admin = User::factory()->create(['role' => UserRole::ADMIN]);
         $ticket = Ticket::factory()->create(['status' => 'submitted']);
 
         $ticket->assignTo($admin);
@@ -103,7 +104,7 @@ class TicketModelTest extends TestCase
         $this->expectException(InvalidTicketAssignmentException::class);
         $this->expectExceptionMessage("User with role 'homeowner' cannot be assigned tickets");
 
-        $homeowner = User::factory()->create(['role' => 'homeowner']);
+        $homeowner = User::factory()->create(['role' => UserRole::HOMEOWNER]);
         $ticket = Ticket::factory()->create(['status' => 'submitted']);
 
         $ticket->assignTo($homeowner);
@@ -115,7 +116,7 @@ class TicketModelTest extends TestCase
         $this->expectException(InvalidTicketAssignmentException::class);
         $this->expectExceptionMessage("Ticket with status 'in_progress' cannot be assigned");
 
-        $builder = User::factory()->create(['role' => 'builder']);
+        $builder = User::factory()->create(['role' => UserRole::BUILDER]);
         $ticket = Ticket::factory()->create(['status' => 'in_progress']);
 
         $ticket->assignTo($builder);
@@ -191,7 +192,7 @@ class TicketModelTest extends TestCase
     /** @test */
     public function it_can_check_if_ticket_is_assigned(): void
     {
-        $builder = User::factory()->create(['role' => 'builder']);
+        $builder = User::factory()->create(['role' => UserRole::BUILDER]);
         $assignedTicket = Ticket::factory()->create([
             'status' => 'assigned',
             'assigned_to' => $builder->id,
@@ -250,8 +251,8 @@ class TicketModelTest extends TestCase
     /** @test */
     public function it_can_reassign_to_different_builder(): void
     {
-        $builder1 = User::factory()->create(['role' => 'builder']);
-        $builder2 = User::factory()->create(['role' => 'builder']);
+        $builder1 = User::factory()->create(['role' => UserRole::BUILDER]);
+        $builder2 = User::factory()->create(['role' => UserRole::BUILDER]);
 
         $ticket = Ticket::factory()->create([
             'status' => 'assigned',
@@ -270,7 +271,7 @@ class TicketModelTest extends TestCase
         $this->expectException(InvalidTicketAssignmentException::class);
         $this->expectExceptionMessage('Ticket must be assigned before it can be reassigned');
 
-        $builder = User::factory()->create(['role' => 'builder']);
+        $builder = User::factory()->create(['role' => UserRole::BUILDER]);
         $ticket = Ticket::factory()->create(['status' => 'submitted']);
 
         $ticket->reassignTo($builder);

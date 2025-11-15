@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Enums\UserRole;
 use App\Models\Property;
 use App\Models\Ticket;
 use App\Models\User;
@@ -23,7 +24,7 @@ class TicketServiceTest extends TestCase
 
     public function test_can_create_ticket(): void
     {
-        $user = User::factory()->create(['role' => 'homeowner']);
+        $user = User::factory()->create(['role' => UserRole::HOMEOWNER]);
         $property = Property::factory()->create(['user_id' => $user->id]);
 
         $data = [
